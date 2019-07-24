@@ -1,4 +1,4 @@
-use std::cmp::min;
+use std::cmp::{max, min};
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader, Read};
@@ -21,6 +21,7 @@ fn ex2() -> io::Result<()> {
     let f = BufReader::new(f);
 
     let mut total_area: u64 = 0;
+    let mut ribbon_len: u64 = 0;
     for line in f.lines() {
         if let Ok(txt) = line {
             let v: Vec<&str> = txt.split("x").collect();
@@ -31,11 +32,19 @@ fn ex2() -> io::Result<()> {
             let lw = l * w;
             let lh = l * h;
             let wh = w * h;
+            let min_lw = min(l, w);
+            let min_lh = min(l, h);
+            let min_wh = min(w, h);
+            let smallest = min(min_lw, min(min_lh, min_wh));
+            let second_smallest = max(min_lw, max(min_wh, min_lh));
+
             total_area += 2 * lw + 2 * lh + 2 * wh + min(lw, min(lh, wh));
+            ribbon_len += l * w * h + 2 * smallest + 2 * second_smallest;
         }
     }
 
     eprintln!("total_area = {:?}", total_area);
+    eprintln!("ribbon_len = {:?}", ribbon_len);
     Ok(())
 }
 
