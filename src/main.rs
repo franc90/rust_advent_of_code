@@ -8,7 +8,27 @@ fn main() -> io::Result<()> {
     ex1();
     ex2()?;
     ex3();
+//    ex4(); time consuming
     Ok(())
+}
+
+fn ex4() {
+    let secret_key = String::from("bgvyzdsv");
+    let mut found = false;
+    let mut nr: i64 = 0;
+    while !found && nr >= 0 {
+        let nr_as_str = nr.to_string();
+        let mut data = secret_key.clone();
+        data.push_str(nr_as_str.as_str());
+        let digest = md5::compute(data);
+        let digest = format!("{:x}", digest);
+        if digest.starts_with("000000") {
+            found = true;
+        } else {
+            nr += 1;
+        }
+    }
+    eprintln!("smallest nr = {:?}", nr);
 }
 
 fn ex3() {
@@ -47,7 +67,6 @@ fn ex3() {
             _ => eprintln!("unknown char = {:?}", c)
         };
         visited_houses.insert(House(santa.0, santa.1));
-
     }
 
     eprintln!("Number of visited houses = {:?}", visited_houses.len());
