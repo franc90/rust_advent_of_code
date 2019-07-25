@@ -2,11 +2,55 @@ use std::cmp::{max, min};
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader, Read};
+use std::collections::HashSet;
 
 fn main() -> io::Result<()> {
-    ex1()?;
+    ex1();
     ex2()?;
+    ex3();
     Ok(())
+}
+
+fn ex3() {
+    #[derive(Eq, PartialEq, Hash)]
+    struct House(i32, i32);
+    struct Santa(i32, i32);
+
+    let mut santa = Santa(0, 0);
+    let mut robot_santa = Santa(0, 0);
+    let mut visited_houses = HashSet::new();
+    let mut santa_turn = true;
+
+    visited_houses.insert(House(0, 0));
+
+    let f = File::open("resources/2015/ex3_in").expect("file open failed");
+    let f = BufReader::new(f);
+
+    for line in f.lines() {
+        for c in line.expect("lines failed").chars() {
+            let mut current_santa = if santa_turn {
+                &mut santa
+            } else {
+                &mut robot_santa
+            };
+            visit_next_house(&c, &mut current_santa, &mut visited_houses);
+            santa_turn = !santa_turn;
+        };
+    };
+
+    fn visit_next_house(c: &char, santa: &mut Santa, visited_houses: &mut HashSet<House>) {
+        match c {
+            '>' => santa.0 += 1,
+            '<' => santa.0 -= 1,
+            'v' => santa.1 -= 1,
+            '^' => santa.1 += 1,
+            _ => eprintln!("unknown char = {:?}", c)
+        };
+        visited_houses.insert(House(santa.0, santa.1));
+
+    }
+
+    eprintln!("Number of visited houses = {:?}", visited_houses.len());
 }
 
 fn ex2() -> io::Result<()> {
@@ -48,10 +92,10 @@ fn ex2() -> io::Result<()> {
     Ok(())
 }
 
-fn ex1() -> io::Result<()> {
-    let mut f = File::open("resources/2015/ex1_in")?;
+fn ex1() {
+    let mut f = File::open("resources/2015/ex1_in").expect("couldn't open file");
     let mut buffer = Vec::new();
-    f.read_to_end(&mut buffer)?;
+    f.read_to_end(&mut buffer).expect("couldn't read file");
     let mut floor_nr = 0;
     for x in buffer {
         match x {
@@ -61,5 +105,4 @@ fn ex1() -> io::Result<()> {
         }
     }
     eprintln!("floor_nr = {:?}", floor_nr);
-    Ok(())
 }
