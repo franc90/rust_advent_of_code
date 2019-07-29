@@ -1,16 +1,21 @@
 use std::cmp::{max, min};
+use std::collections::HashSet;
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader, Read};
-use std::collections::HashSet;
+
+mod exercise5;
+
 
 fn main() -> io::Result<()> {
     ex1();
     ex2()?;
     ex3();
 //    ex4(); time consuming
+    exercise5::ex5();
     Ok(())
 }
+
 
 fn ex4() {
     let secret_key = String::from("bgvyzdsv");
