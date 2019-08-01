@@ -6,8 +6,8 @@ pub fn ex5() {
     let f = BufReader::new(f);
     let mut simple_nice = 0;
     let mut complex_nice = 0;
-    for lineResult in f.lines() {
-        let line = lineResult.expect("lines failed");
+    for line_result in f.lines() {
+        let line = line_result.expect("lines failed");
         if is_nice(&line) {
             simple_nice += 1;
         }
