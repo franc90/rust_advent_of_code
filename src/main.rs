@@ -5,6 +5,7 @@ use std::io;
 use std::io::{BufRead, BufReader, Read};
 
 mod exercise5;
+mod exercise6;
 
 
 fn main() -> io::Result<()> {
@@ -13,6 +14,7 @@ fn main() -> io::Result<()> {
     ex3();
 //    ex4(); time consuming
     exercise5::ex5();
+    exercuse6::ex6();
     Ok(())
 }
 
