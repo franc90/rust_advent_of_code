@@ -7,6 +7,7 @@ use std::io::{BufRead, BufReader, Read};
 mod exercise5;
 mod exercise6;
 mod exercise7;
+mod exercise8;
 
 fn main() -> io::Result<()> {
 //    ex1();
@@ -15,7 +16,8 @@ fn main() -> io::Result<()> {
 //    ex4(); time consuming
 //    exercise5::ex5();
 //    exercise6::ex6();
-    exercise7::ex7();
+//    exercise7::ex7();
+    exercise8::run();
     Ok(())
 }
 
