@@ -6,15 +6,16 @@ use std::io::{BufRead, BufReader, Read};
 
 mod exercise5;
 mod exercise6;
-
+mod exercise7;
 
 fn main() -> io::Result<()> {
-    ex1();
-    ex2()?;
-    ex3();
+//    ex1();
+//    ex2()?;
+//    ex3();
 //    ex4(); time consuming
-    exercise5::ex5();
-    exercuse6::ex6();
+//    exercise5::ex5();
+//    exercise6::ex6();
+    exercise7::ex7();
     Ok(())
 }
 
