@@ -1,4 +1,4 @@
-pub fn compute_lengths(lines: &String) -> (usize, usize) {
+pub fn compute_lengths(lines: &str) -> (usize, usize) {
     let mut code_len = 0;
     let mut mem_len = 0;
 
@@ -20,7 +20,7 @@ fn sanitize(line: &str) -> String {
 }
 
 fn drop_first(line: &str) -> &str {
-    if line.starts_with("\"") {
+    if line.starts_with('\"') {
         &line[1..]
     } else {
         line
@@ -28,7 +28,7 @@ fn drop_first(line: &str) -> &str {
 }
 
 fn drop_last(line: &str) -> &str {
-    if line.ends_with("\"") {
+    if line.ends_with('\"') {
         let len = line.len() - 1;
         &line[..len]
     } else {
@@ -47,7 +47,7 @@ fn drop_quotes(line: String) -> String {
 fn drop_hexes(line: String) -> String {
     let mut line = line;
     while let Some(loc) = line.find("\\x") {
-        let mut chars = &mut line[loc + 2..].chars();
+        let chars = &mut line[loc + 2..].chars();
         if is_hex(chars.next()) && is_hex(chars.next()) {
             line.replace_range(loc..loc + 4, "w")
         } else {

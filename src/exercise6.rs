@@ -30,8 +30,8 @@ impl Grid {
     }
 
     fn turn_on(&mut self, start: &Point, end: &Point) {
-        for x in start.x..end.x + 1 {
-            for y in start.y..end.y + 1 {
+        for x in start.x..=end.x {
+            for y in start.y..=end.y {
                 self.state[x][y] = true;
                 self.brightness[x][y] += 1;
             }
@@ -39,8 +39,8 @@ impl Grid {
     }
 
     fn turn_off(&mut self, start: &Point, end: &Point) {
-        for x in start.x..end.x + 1 {
-            for y in start.y..end.y + 1 {
+        for x in start.x..=end.x {
+            for y in start.y..=end.y {
                 self.state[x][y] = false;
                 if self.brightness[x][y] > 0 { self.brightness[x][y] -= 1 }
             }
@@ -48,8 +48,8 @@ impl Grid {
     }
 
     fn toggle(&mut self, start: &Point, end: &Point) {
-        for x in start.x..end.x + 1 {
-            for y in start.y..end.y + 1 {
+        for x in start.x..=end.x {
+            for y in start.y..=end.y {
                 self.state[x][y] = !self.state[x][y];
                 self.brightness[x][y] += 2
             }
@@ -72,7 +72,7 @@ impl Grid {
         let mut sum:i64 = 0;
         for x in 0..self.brightness.len() {
             for y in 0..self.brightness[x].len() {
-                sum += self.brightness[x][y] as i64
+                sum += i64::from(self.brightness[x][y])
             }
         }
         sum
@@ -123,7 +123,7 @@ fn parse_action(token: &str) -> Action {
 }
 
 fn parse_point(token: &str) -> Point {
-    let mut iter = token.split(",");
+    let mut iter = token.split(',');
     let x = parse_coord(iter.next());
     let y = parse_coord(iter.next());
     Point::new(x, y)

@@ -71,7 +71,7 @@ impl Graph {
             .filter(|e| (e.from == *from && e.to == *to) || (e.from == *to && e.to == *from))
             .map(|e| e.weight)
             .next()
-            .expect(&format!("No route between {} and {}", from, to))
+            .unwrap_or_else(|| panic!("No route between {} and {}", from, to))
     }
 
     fn all_vertices(&self) -> Vec<&String> {

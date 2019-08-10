@@ -59,7 +59,7 @@ fn resolve_signals(operations: &mut HashMap<String, Operation>) -> HashMap<Strin
     loop {
         if operations.is_empty() { break; }
         for (wire_name, operation) in operations.iter() {
-            let v: () = match operation {
+            match operation {
                 Operation::Add(x, y) =>
                     insert_if_resolved_two(&mut resolved, wire_name, x, y, |a, b| a & b),
                 Operation::Or(x, y) =>
@@ -69,9 +69,9 @@ fn resolve_signals(operations: &mut HashMap<String, Operation>) -> HashMap<Strin
                 Operation::RShift(x, y) =>
                     insert_if_resolved_two(&mut resolved, wire_name, x, y, |a, b| a >> b),
                 Operation::Not(x) =>
-                    insert_if_resolved_one(&mut resolved, wire_name, x, 0, |a, b| !a),
+                    insert_if_resolved_one(&mut resolved, wire_name, x, 0, |a, _b| !a),
                 Operation::Assign(x) =>
-                    insert_if_resolved_one(&mut resolved, wire_name, x, 0, |a, b| a),
+                    insert_if_resolved_one(&mut resolved, wire_name, x, 0, |a, _b| a),
             };
         }
         resolved.keys().for_each(|k| { operations.remove(k); });
@@ -79,7 +79,7 @@ fn resolve_signals(operations: &mut HashMap<String, Operation>) -> HashMap<Strin
     resolved
 }
 
-fn insert_if_resolved_two<F>(resolved: &mut HashMap<String, u16>, wire_name: &String, x: &Statement, y: &Statement, f: F)
+fn insert_if_resolved_two<F>(resolved: &mut HashMap<String, u16>, wire_name: &str, x: &Statement, y: &Statement, f: F)
     where F: Fn(u16, u16) -> u16 {
     let val = match (x, y) {
         (Statement::Constant(val1), Statement::Constant(val2)) => Some(f(*val1, *val2)),
@@ -93,24 +93,24 @@ fn insert_if_resolved_two<F>(resolved: &mut HashMap<String, u16>, wire_name: &St
             } else { None },
     };
     if let Some(val) = val {
-        resolved.insert(wire_name.clone(), val);
+        resolved.insert(wire_name.to_string(), val);
     }
 }
 
-fn insert_if_resolved_one<F>(resolved: &mut HashMap<String, u16>, wire_name: &String, x: &Statement, y: u16, f: F)
+fn insert_if_resolved_one<F>(resolved: &mut HashMap<String, u16>, wire_name: &str, x: &Statement, y: u16, f: F)
     where F: Fn(u16, u16) -> u16 {
     let val = match x {
-        (Statement::Constant(x)) => Some(f(*x, y)),
-        (Statement::Value(x)) =>
+        Statement::Constant(x) => Some(f(*x, y)),
+        Statement::Value(x) =>
             if resolved.contains_key(x) { Some(f(resolved[x], y)) } else { None },
     };
     if let Some(val) = val {
-        resolved.insert(wire_name.clone(), val);
+        resolved.insert(wire_name.to_string(), val);
     }
 }
 
-fn insert(resolved: &mut HashMap<String, u16>, wire_name: &String, val: u16) {
-    resolved.insert(wire_name.clone(), val);
+fn insert(resolved: &mut HashMap<String, u16>, wire_name: &str, val: u16) {
+    resolved.insert(wire_name.to_string(), val);
 }
 
 fn parse_and(instr: &str) -> Operation {
@@ -141,20 +141,20 @@ fn parse_not(instr: &str) -> Operation {
 fn parse_with_two_args(instr: &str, separator: &str) -> (Statement, Statement) {
     let collection: Vec<&str> = instr.split(separator).collect();
     let mut iterator = collection.iter();
-    let x = *iterator.next().expect(&format!("No first arg in '{}'", instr));
-    let y = *iterator.next().expect(&format!("No second arg in '{}'", instr));
+    let x = *iterator.next().unwrap_or_else(|| panic!("No first arg in '{}'", instr));
+    let y = *iterator.next().unwrap_or_else(|| panic!("No second arg in '{}'", instr));
     (parse_statement(x), parse_statement(y))
 }
 
 fn parse_statement(instr: &str) -> Statement {
     match instr.parse::<u16>() {
-        Ok(val) => Statement::Constant(parse_const(instr)),
-        Err(val) => Statement::Value(instr.to_string()),
+        Ok(_val) => Statement::Constant(parse_const(instr)),
+        Err(_val) => Statement::Value(instr.to_string()),
     }
 }
 
 fn parse_const(instr: &str) -> u16 {
-    instr.parse::<u16>().expect(&format!("Couldn't parse '{}' to u16", instr))
+    instr.parse::<u16>().unwrap_or_else(|_| panic!("Couldn't parse '{}' to u16", instr))
 }
 
 #[cfg(test)]

@@ -20,7 +20,7 @@ pub fn ex5() {
     eprintln!("nr of complex nice strings = {:?}", complex_nice);
 }
 
-fn is_nice(line: &String) -> bool {
+fn is_nice(line: &str) -> bool {
     if line.len() < 3 {
         return false;
     }
@@ -29,12 +29,12 @@ fn is_nice(line: &String) -> bool {
     let mut no_forbidden_pairs = true;
     let mut chars_iter = line.chars();
     let mut last = chars_iter.next().unwrap();
-    update_vowels(&mut vowels_count, &last);
+    update_vowels(&mut vowels_count, last);
 
     for curr in chars_iter {
-        update_vowels(&mut vowels_count, &curr);
-        update_doubles(&mut doubles_count, &curr, &last);
-        update_forbiddens(&mut no_forbidden_pairs, &curr, &last);
+        update_vowels(&mut vowels_count, curr);
+        update_doubles(&mut doubles_count, curr, last);
+        update_forbiddens(&mut no_forbidden_pairs, curr, last);
         last = curr;
     };
 
@@ -42,33 +42,33 @@ fn is_nice(line: &String) -> bool {
 }
 
 
-fn update_vowels(current_count: &mut i32, c: &char) {
+fn update_vowels(current_count: &mut i32, c: char) {
     let vowels = vec!['a', 'e', 'i', 'o', 'u'];
-    if vowels.contains(c) {
+    if vowels.contains(&c) {
         *current_count += 1
     }
 }
 
-fn update_doubles(current_count: &mut i32, curr: &char, last: &char) {
+fn update_doubles(current_count: &mut i32, curr: char, last: char) {
     if curr == last {
         *current_count += 1
     }
 }
 
-fn update_forbiddens(current_val: &mut bool, curr: &char, last: &char) {
+fn update_forbiddens(current_val: &mut bool, curr: char, last: char) {
     let forbidden_pairs = vec!["ab", "cd", "pq", "xy"];
     if forbidden_pairs.contains(&format!("{}{}", last, curr).as_str()) {
         *current_val = false;
     }
 }
 
-fn is_complex_nice(line: &String) -> bool {
+fn is_complex_nice(line: &str) -> bool {
     has_pair_appearing_twice(line) &&
         has_letter_appearing_twice(line)
 }
 
-fn has_pair_appearing_twice(line: &String) -> bool {
-    let mut line = line.as_str();
+fn has_pair_appearing_twice(line: &str) -> bool {
+    let mut line = line;
     while line.len() > 3 {
         let pair = &line[..2];
         let mut slice = &line[2..];
@@ -83,8 +83,8 @@ fn has_pair_appearing_twice(line: &String) -> bool {
     false
 }
 
-fn has_letter_appearing_twice(line: &String) -> bool {
-    let mut slice: &str = line.as_str();
+fn has_letter_appearing_twice(line: &str) -> bool {
+    let mut slice: &str = line;
     while slice.len() > 2 {
         if is_expected_dupplicate(&slice[..3]) {
             return true;

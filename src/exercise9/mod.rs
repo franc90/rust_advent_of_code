@@ -22,7 +22,7 @@ fn to_triples(input: String) -> Vec<(String, String, u32)> {
             let nodes: Vec<&str> = nodes.split(" to ").collect();
             if let [from, to] = &*nodes {
                 let weight = weight.parse::<u32>()
-                    .expect(&format!("Could not parse '{}' to u32'", weight));
+                    .unwrap_or_else(|_| panic!("Could not parse '{}' to u32'", weight));
                 triples.push((from.to_string(), to.to_string(), weight));
             }
         }

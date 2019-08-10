@@ -1,6 +1,6 @@
 use std::ops::Add;
 
-pub fn compute_lengths(lines: &String) -> (usize, usize) {
+pub fn compute_lengths(lines: &str) -> (usize, usize) {
     let mut original_len = 0;
     let mut encoded_len = 0;
 
@@ -22,15 +22,15 @@ fn encode(line: &str) -> String {
 }
 
 fn encode_first(line: &str) -> String {
-    if line.starts_with("\"") {
-        line.replacen("\"", "www", 1)
+    if line.starts_with('\"') {
+        line.replacen('\"', "www", 1)
     } else {
         line.to_string()
     }
 }
 
 fn encode_last(mut line: String) -> String {
-    if line.ends_with("\"") {
+    if line.ends_with('\"') {
         line.pop();
         line.add("www")
     } else {
@@ -38,18 +38,18 @@ fn encode_last(mut line: String) -> String {
     }
 }
 
-fn encode_backslashes(mut line: String) -> String {
+fn encode_backslashes(line: String) -> String {
     line.replace("\\\\", "wwww")
 }
 
-fn encode_quotes(mut line: String) -> String {
+fn encode_quotes(line: String) -> String {
     line.replace("\\\"", "wwww")
 }
 
-fn encode_hexes(mut line: String) -> String {
+fn encode_hexes(line: String) -> String {
     let mut line = line;
     while let Some(loc) = line.find("\\x") {
-        let mut chars = &mut line[loc + 2..].chars();
+        let chars = &mut line[loc + 2..].chars();
         if is_hex(chars.next()) && is_hex(chars.next()) {
             line.replace_range(loc..loc + 4, "wwwww")
         } else {

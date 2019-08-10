@@ -65,12 +65,12 @@ fn ex3() {
             } else {
                 &mut robot_santa
             };
-            visit_next_house(&c, &mut current_santa, &mut visited_houses);
+            visit_next_house(c, &mut current_santa, &mut visited_houses);
             santa_turn = !santa_turn;
         };
     };
 
-    fn visit_next_house(c: &char, santa: &mut Santa, visited_houses: &mut HashSet<House>) {
+    fn visit_next_house(c: char, santa: &mut Santa, visited_houses: &mut HashSet<House>) {
         match c {
             '>' => santa.0 += 1,
             '<' => santa.0 -= 1,
@@ -85,25 +85,25 @@ fn ex3() {
 }
 
 fn ex2() -> io::Result<()> {
-    fn get_val(vec: &Vec<&str>, idx: usize) -> u64 {
+    fn get_val(vec: &[&str], idx: usize) -> u64 {
         match vec.get(idx) {
             Some(txt) => txt.parse::<u64>().unwrap(),
             None => 0
         }
     }
 
-    let f = File::open("resources/2015/ex2_in")?;
-    let f = BufReader::new(f);
+    let file = File::open("resources/2015/ex2_in")?;
+    let file = BufReader::new(file);
 
     let mut total_area: u64 = 0;
     let mut ribbon_len: u64 = 0;
-    for line in f.lines() {
+    for line in file.lines() {
         if let Ok(txt) = line {
-            let v: Vec<&str> = txt.split("x").collect();
-            assert_eq!(v.len(), 3);
-            let l = get_val(&v, 0);
-            let w = get_val(&v, 1);
-            let h = get_val(&v, 2);
+            let vector: Vec<&str> = txt.split('x').collect();
+            assert_eq!(vector.len(), 3);
+            let l = get_val(&vector, 0);
+            let w = get_val(&vector, 1);
+            let h = get_val(&vector, 2);
             let lw = l * w;
             let lh = l * h;
             let wh = w * h;
